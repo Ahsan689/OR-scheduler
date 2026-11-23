@@ -1,5 +1,6 @@
-import type { CSSProperties, SVGProps } from "react";
+import type { CSSProperties } from "react";
 
+// The tooltip is an HTML element, so CSS var() resolves here (unlike SVG attrs).
 export const tooltipContentStyle: CSSProperties = {
   background: "var(--viz-surface)",
   border: "1px solid var(--viz-axis)",
@@ -10,10 +11,4 @@ export const tooltipContentStyle: CSSProperties = {
 
 export const tooltipLabelStyle: CSSProperties = {
   color: "var(--viz-secondary)",
-};
-
-// Recharts `tick` takes SVG text props, not CSS properties.
-export const axisTick: SVGProps<SVGTextElement> = {
-  fill: "var(--viz-muted)",
-  fontSize: 12,
 };
