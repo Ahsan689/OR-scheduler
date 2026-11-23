@@ -24,11 +24,11 @@ window.
 | Metric | Baseline | Optimized | Improvement |
 |---|---|---|---|
 | Overtime (year) | 1,485h | 1,174h | **+20.9%** |
-| On-time first starts | 81% | 100% | **+19.0 pts** |
-| Idle gaps (year) | 166h | 0h | **+100.0%** |
-| Cases / room / day | 5.17 | 4.62 | — |
+| On-time first starts | 81% | 100% | **+19.1 pts** |
+| Idle gaps (year) | 167h | 0h | **+100.0%** |
+| Cases / room / day | 5.16 | 4.62 | — |
 
-Across **261** operating days and **896** room-days, with
+Across **261** operating days and **897** room-days, with
 **364** same-day cancellations/no-shows in the dataset.
 
 > The **overtime** and **on-time** figures are the robust headline: planning
@@ -40,6 +40,20 @@ Across **261** operating days and **896** room-days, with
 ![Idle and overtime](charts/idle_overtime.png)
 
 ![On-time starts](charts/on_time.png)
+
+## Disruption handling: emergency insertion
+
+The figures above come mostly from operational discipline (starting on time,
+reclaiming cancellation gaps). This section isolates the **scheduler's own**
+contribution. On the **82** days with an add-on emergency
+(**95** cases), the manual plan adds the emergency to the
+block surgeon's already-full room; an on-call emergency can run in any room, so
+the optimizer places it where there is slack. Electives stay in their rooms in
+both plans, so the difference is purely the scheduler's room choice.
+
+| Metric (emergency days) | Manual | Optimized | Improvement |
+|---|---|---|---|
+| Overtime | 569h | 524h | **+7.9%** |
 
 ## How to reproduce
 

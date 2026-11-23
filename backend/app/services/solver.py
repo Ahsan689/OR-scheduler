@@ -26,6 +26,9 @@ class CaseInput:
     case_id: int
     surgeon_id: int
     duration_minutes: int
+    # Pin this case to a specific room (e.g. an elective kept in its block room);
+    # None lets the solver choose (e.g. an on-call emergency).
+    fixed_room_index: int | None = None
 
 
 @dataclass(frozen=True)
@@ -108,6 +111,8 @@ def solve_day(
             )
             room_lits.append(present)
         model.add_exactly_one(room_lits)
+        if case.fixed_room_index is not None and 0 <= case.fixed_room_index < num_rooms:
+            model.add(presence[(i, case.fixed_room_index)] == 1)
 
     for r in range(num_rooms):
         model.add_no_overlap(room_intervals[r])

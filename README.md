@@ -33,8 +33,13 @@ estimates by **17%** (MAE 25.2 → 20.8 min):
 | Cases per room per day | 5.2 | 4.6 | — |
 
 The overtime and on-time gains are the robust headline (starting on time removes
-late-start cascades); the idle figure is the optimized plan's potential. Full
-method, charts, and honest limitations: [`docs/results.md`](docs/results.md).
+late-start cascades); the idle figure is the optimized plan's potential.
+
+Isolating the **scheduler's own** contribution: on the 82 days with an add-on
+emergency, placing the on-call case in a room with slack (instead of the block
+surgeon's full room) cuts overtime on those days a further **8%** — a win
+attributable purely to OR-Tools' room assignment. Full method, charts, and
+honest limitations: [`docs/results.md`](docs/results.md).
 
 ## Screenshots
 
