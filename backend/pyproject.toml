@@ -36,6 +36,9 @@ src = ["app", "tests"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "W", "C4"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["app", "tests"]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
