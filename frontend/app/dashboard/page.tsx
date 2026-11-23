@@ -43,7 +43,10 @@ export default function DashboardPage() {
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">OR Utilization</h1>
         <p className="text-sm opacity-60">
-          Synthetic data — not a clinical system.
+          Synthetic data — not a clinical system.{" "}
+          <a href="/schedule" className="underline">
+            Schedule optimizer →
+          </a>
         </p>
       </header>
 

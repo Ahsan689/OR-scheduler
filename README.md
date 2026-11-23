@@ -36,12 +36,19 @@ The overtime and on-time gains are the robust headline (starting on time removes
 late-start cascades); the idle figure is the optimized plan's potential. Full
 method, charts, and honest limitations: [`docs/results.md`](docs/results.md).
 
-## Screenshot
+## Screenshots
 
-Utilization dashboard (synthetic data): KPIs, utilization trend, cases per room,
-estimate-vs-actual duration, and per-room / per-procedure breakdowns.
+**Utilization dashboard** (synthetic data): KPIs, utilization trend, cases per
+room, estimate-vs-actual duration, and per-room / per-procedure breakdowns.
 
 ![Utilization dashboard](docs/screenshots/dashboard.png)
+
+**Schedule optimizer** — the human-in-the-loop flow: run the optimizer for a
+day, review the proposed room/time assignments on a Gantt timeline, and
+accept / edit / reject each proposal. Baseline vs optimized metrics are shown
+side by side (including trade-offs, e.g. less overtime at the cost of some idle).
+
+![Schedule optimizer](docs/screenshots/schedule.png)
 
 ## Features
 

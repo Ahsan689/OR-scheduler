@@ -52,14 +52,93 @@ export type DashboardResponse = {
   procedures: ProcedureAccuracy[];
 };
 
-export async function fetchDashboard(signal?: AbortSignal): Promise<DashboardResponse> {
-  const res = await fetch(`${API_URL}/metrics/dashboard`, {
-    cache: "no-store",
-    signal,
-    headers: { "X-Role": DEMO_ROLE, "X-Actor": DEMO_ACTOR },
-  });
+function authHeaders(extra?: Record<string, string>): Record<string, string> {
+  return { "X-Role": DEMO_ROLE, "X-Actor": DEMO_ACTOR, ...extra };
+}
+
+async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, { cache: "no-store", ...init });
   if (!res.ok) {
-    throw new Error(`Request failed (${res.status})`);
+    let detail = `Request failed (${res.status})`;
+    try {
+      const body = (await res.json()) as { detail?: string };
+      if (body.detail) detail = body.detail;
+    } catch {
+      // keep the default message
+    }
+    throw new Error(detail);
   }
-  return (await res.json()) as DashboardResponse;
+  return (await res.json()) as T;
+}
+
+export async function fetchDashboard(signal?: AbortSignal): Promise<DashboardResponse> {
+  return request<DashboardResponse>(`${API_URL}/metrics/dashboard`, {
+    signal,
+    headers: authHeaders(),
+  });
+}
+
+// ---- Scheduler / proposals ----
+
+export type ProposalStatus = "pending" | "accepted" | "rejected";
+
+export type ProposalOut = {
+  id: number;
+  case_id: number;
+  patient_ref: string;
+  proposed_room_code: string | null;
+  proposed_start: string | null;
+  proposed_end: string | null;
+  status: ProposalStatus;
+  rationale: string | null;
+};
+
+export type ScheduleMetrics = {
+  overtime_minutes: number;
+  idle_minutes: number;
+  makespan_minutes: number;
+};
+
+export type OptimizeResponse = {
+  service_date: string;
+  num_cases: number;
+  num_proposals: number;
+  baseline: ScheduleMetrics;
+  optimized: ScheduleMetrics;
+  proposals: ProposalOut[];
+};
+
+export type ProposalPatch = {
+  proposed_room_code?: string;
+  proposed_start?: string;
+  proposed_end?: string;
+};
+
+export async function optimizeSchedule(date: string): Promise<OptimizeResponse> {
+  return request<OptimizeResponse>(
+    `${API_URL}/schedule/optimize?date=${encodeURIComponent(date)}`,
+    { method: "POST", headers: authHeaders() },
+  );
+}
+
+export async function acceptProposal(id: number): Promise<ProposalOut> {
+  return request<ProposalOut>(`${API_URL}/proposals/${id}/accept`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+}
+
+export async function rejectProposal(id: number): Promise<ProposalOut> {
+  return request<ProposalOut>(`${API_URL}/proposals/${id}/reject`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+}
+
+export async function editProposal(id: number, patch: ProposalPatch): Promise<ProposalOut> {
+  return request<ProposalOut>(`${API_URL}/proposals/${id}`, {
+    method: "PATCH",
+    headers: authHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify(patch),
+  });
 }

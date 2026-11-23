@@ -53,12 +53,20 @@ export default function Home() {
           Operating room scheduling &amp; utilization. Portfolio project —
           synthetic data only, not a clinical system.
         </p>
-        <a
-          href="/dashboard"
-          className="mt-2 inline-block w-fit rounded-md border border-black/15 px-3 py-1.5 text-sm font-medium hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/5"
-        >
-          View utilization dashboard →
-        </a>
+        <nav className="mt-2 flex flex-wrap gap-2">
+          <a
+            href="/dashboard"
+            className="inline-block rounded-md border border-black/15 px-3 py-1.5 text-sm font-medium hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/5"
+          >
+            Utilization dashboard →
+          </a>
+          <a
+            href="/schedule"
+            className="inline-block rounded-md border border-black/15 px-3 py-1.5 text-sm font-medium hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/5"
+          >
+            Schedule optimizer →
+          </a>
+        </nav>
       </header>
 
       <section
