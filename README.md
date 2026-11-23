@@ -20,16 +20,21 @@ ORFlow shows how data, prediction, and optimization can reduce these, and how to
 
 ## Headline Result
 
-*(To be filled in after the simulation step.)*
+On 12 months of simulated orthopedic cases (261 operating days), replayed under
+the same actual durations — manual/estimate-based scheduling vs ORFlow
+(predicted durations + OR-Tools), plus a duration model that beats surgeon
+estimates by **17%** (MAE 25.2 → 20.8 min):
 
 | Metric | Baseline | ORFlow | Change |
 |---|---|---|---|
-| Idle minutes per room per day | – | – | – |
-| Overtime minutes per day | – | – | – |
-| On-time first-case starts | – | – | – |
-| Cases per room per day | – | – | – |
+| Overtime (hours/year) | 1,485 | 1,174 | **−21%** |
+| On-time first-case starts | 81% | 100% | **+19 pts** |
+| Idle gaps (hours/year) | 166 | ~0 | **−100%** |
+| Cases per room per day | 5.2 | 4.6 | — |
 
-Full method and charts: `docs/results.md`.
+The overtime and on-time gains are the robust headline (starting on time removes
+late-start cascades); the idle figure is the optimized plan's potential. Full
+method, charts, and honest limitations: [`docs/results.md`](docs/results.md).
 
 ## Features
 

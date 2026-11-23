@@ -16,6 +16,7 @@ dependencies = [
     "scikit-learn>=1.5,<2.0",
     "joblib>=1.4,<2.0",
     "ortools>=9.11,<9.15",
+    "matplotlib>=3.9,<4.0",
 ]
 
 [project.optional-dependencies]
@@ -62,7 +63,7 @@ module = ["openpyxl.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = ["sklearn.*", "joblib.*", "ortools.*"]
+module = ["sklearn.*", "joblib.*", "ortools.*", "matplotlib.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
