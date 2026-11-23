@@ -36,6 +36,13 @@ The overtime and on-time gains are the robust headline (starting on time removes
 late-start cascades); the idle figure is the optimized plan's potential. Full
 method, charts, and honest limitations: [`docs/results.md`](docs/results.md).
 
+## Screenshot
+
+Utilization dashboard (synthetic data): KPIs, utilization trend, cases per room,
+estimate-vs-actual duration, and per-room / per-procedure breakdowns.
+
+![Utilization dashboard](docs/screenshots/dashboard.png)
+
 ## Features
 
 - **Synthetic data generator:** 12 months of realistic orthopedic cases across several ORs (reproducible with a fixed seed)
@@ -53,8 +60,9 @@ method, charts, and honest limitations: [`docs/results.md`](docs/results.md).
 |---|---|
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.x, Alembic, Pydantic v2 |
 | Database | PostgreSQL |
-| Prediction | scikit-learn, LightGBM |
+| Prediction | scikit-learn (`HistGradientBoostingRegressor`, quantile) |
 | Optimization | Google OR-Tools (CP-SAT) |
+| Charts (results) | matplotlib |
 | Frontend | Next.js (App Router), TypeScript, Tailwind CSS, Recharts |
 | Tooling | Docker Compose, pytest, ruff, mypy, ESLint, GitHub Actions |
 
@@ -117,49 +125,78 @@ Patients are referenced only by pseudonymous IDs such as `P-00123`.
 
 ## Build Roadmap
 
-| Step | Deliverable |
-|---|---|
-| 1 | Project skeleton: Docker, FastAPI health check, Next.js shell, CI |
-| 2 | Database models and migrations |
-| 3 | Synthetic data generator |
-| 4 | CSV/Excel import with validation |
-| 5 | Utilization dashboard |
-| 6 | Duration predictor vs surgeon estimates |
-| 7 | OR-Tools scheduler with proposals and audit log |
-| 8 | Simulation: baseline vs optimized, results in `docs/results.md` |
-| 9 | Polish: screenshots, live demo, short video, final README |
-
-Target: 4 to 6 weeks.
+| Step | Deliverable | Status |
+|---|---|---|
+| 1 | Project skeleton: Docker, FastAPI health check, Next.js shell, CI | ✅ |
+| 2 | Database models and migrations | ✅ |
+| 3 | Synthetic data generator | ✅ |
+| 4 | CSV/Excel import with validation | ✅ |
+| 5 | Utilization dashboard | ✅ |
+| 6 | Duration predictor vs surgeon estimates | ✅ |
+| 7 | OR-Tools scheduler with proposals and audit log | ✅ |
+| 8 | Simulation: baseline vs optimized, results in `docs/results.md` | ✅ |
+| 9 | Polish: screenshots, final README (live demo + video optional) | ✅ |
 
 ## Getting Started
 
+Prerequisites: Python 3.12, Node 20+, and Docker (for PostgreSQL).
+
 ```bash
-# 1. Clone
-git clone <your-repo-url> orflow && cd orflow
-
-# 2. Start the database
+# 1. Database + backend
 docker compose up -d db
-
-# 3. Backend
 cd backend
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+# Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env
 alembic upgrade head
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload          # API at http://localhost:8000 (docs at /docs)
 
-# 4. Frontend (new terminal)
+# 2. Frontend (new terminal)
 cd frontend
 npm install
-npm run dev
+npm run dev                            # http://localhost:3000/dashboard
 ```
 
-Run checks:
+### Reproduce the data and results
 
 ```bash
-cd backend && pytest && ruff check . && mypy .
-cd frontend && npm run lint
+# a) Generate synthetic CSVs (fixed seed -> reproducible)
+cd simulation
+python -m venv .venv && <activate>  && pip install -e ".[dev]"
+python -m orsim --seed 42 --out output
+
+# b) Import them while the API is running (coordinator role), in order:
+#    hospitals, rooms, surgeons, staff, procedures, cases, block_times
+curl -F kind=hospitals -F file=@simulation/output/hospitals.csv \
+     -H "X-Role: coordinator" http://localhost:8000/import
+# ...repeat for the other six files
+
+# c) Train the duration model (writes predictions back to cases)
+curl -X POST -H "X-Role: coordinator" http://localhost:8000/predictions/train
+
+# d) Build an optimized day and review proposals
+curl -X POST -H "X-Role: coordinator" "http://localhost:8000/schedule/optimize?date=2025-06-16"
+
+# e) Run the baseline-vs-optimized simulation -> docs/results.md + charts
+cd backend && python -m app.simulate --out ../docs
 ```
+
+### Checks
+
+```bash
+cd backend   && ruff check . && mypy . && pytest
+cd simulation && ruff check . && mypy . && pytest
+cd frontend  && npm run lint && npm run typecheck && npm run build
+```
+
+## Deployment
+
+- The backend ships a `Dockerfile`; `docker compose up` runs it alongside
+  PostgreSQL. Configuration is entirely environment-driven (`backend/app/core/config.py`).
+- A live demo needs a host for the API + a managed PostgreSQL, and a static/Node
+  host for the Next.js frontend (set `NEXT_PUBLIC_API_URL` to the API). The
+  dashboard runs fully client-side against the API.
 
 ## Design Principles
 
