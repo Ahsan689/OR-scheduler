@@ -17,5 +17,47 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Data-viz tokens (validated default palette from the dataviz skill). */
+:root {
+  --viz-surface: #fcfcfb;
+  --viz-text: #0b0b0b;
+  --viz-secondary: #52514e;
+  --viz-muted: #898781;
+  --viz-grid: #e1e0d9;
+  --viz-axis: #c3c2b7;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-critical: #d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --viz-surface: #1a1a19;
+    --viz-text: #f0efec;
+    --viz-secondary: #c3c2b7;
+    --viz-muted: #898781;
+    --viz-grid: #2c2c2a;
+    --viz-axis: #383835;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --status-good: #0ca30c;
+    --status-warning: #fab219;
+    --status-critical: #d03b3b;
+  }
+}
+
+:root[data-theme="dark"] {
+  --viz-surface: #1a1a19;
+  --viz-text: #f0efec;
+  --viz-secondary: #c3c2b7;
+  --viz-muted: #898781;
+  --viz-grid: #2c2c2a;
+  --viz-axis: #383835;
+  --series-1: #3987e5;
+  --series-2: #d95926;
 }

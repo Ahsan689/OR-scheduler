@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # Comma-separated list of allowed CORS origins.
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # Operating-room working window (local hours) and on-time tolerance.
+    or_day_start_hour: int = 8
+    or_day_end_hour: int = 16
+    on_time_grace_minutes: int = 5
+
 
 @lru_cache
 def get_settings() -> Settings:
