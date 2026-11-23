@@ -38,6 +38,9 @@ yarn-error.log*
 *.db
 .ipynb_checkpoints/
 
+# Generated synthetic data output
+simulation/output/
+
 # ---- Editors / OS ----
 .vscode/
 .idea/
