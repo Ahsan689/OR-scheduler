@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     or_day_end_hour: int = 16
     on_time_grace_minutes: int = 5
 
+    # Where the trained duration model is saved/loaded.
+    model_path: str = "models/duration.joblib"
+
 
 @lru_cache
 def get_settings() -> Settings:

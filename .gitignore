@@ -41,6 +41,10 @@ yarn-error.log*
 # Generated synthetic data output
 simulation/output/
 
+# Trained model artifacts
+backend/models/
+*.joblib
+
 # ---- Editors / OS ----
 .vscode/
 .idea/
