@@ -12,6 +12,20 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: orflow
+          POSTGRES_PASSWORD: orflow
+          POSTGRES_DB: orflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +44,13 @@ jobs:
 
       - name: Mypy
         run: mypy .
+
+      - name: Validate migration on Postgres
+        env:
+          DATABASE_URL: postgresql+psycopg://orflow:orflow@localhost:5432/orflow
+        run: |
+          alembic upgrade head
+          alembic downgrade base
 
       - name: Pytest
         run: pytest
