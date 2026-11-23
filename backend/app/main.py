@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import health, imports, metrics, predictions
+from app.api import health, imports, metrics, predictions, schedule
 from app.core.config import get_settings
 
 
@@ -24,6 +24,8 @@ def create_app() -> FastAPI:
     app.include_router(imports.router)
     app.include_router(metrics.router)
     app.include_router(predictions.router)
+    app.include_router(schedule.schedule_router)
+    app.include_router(schedule.proposals_router)
     return app
 
 

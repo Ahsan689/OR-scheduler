@@ -37,6 +37,14 @@ class Settings(BaseSettings):
     # Where the trained duration model is saved/loaded.
     model_path: str = "models/duration.joblib"
 
+    # Scheduler (OR-Tools) parameters. Soft-goal weights are configurable.
+    schedule_turnover_minutes: int = 25
+    schedule_max_overtime_minutes: int = 300
+    schedule_weight_overtime: int = 10
+    schedule_weight_finish: int = 1
+    schedule_time_limit_seconds: float = 10.0
+    schedule_random_seed: int = 42
+
 
 @lru_cache
 def get_settings() -> Settings:
